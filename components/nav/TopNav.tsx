@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Heading, Image, Spacer, useColorMode } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import ConnectWallet from '../wallet/ConnectWallet';
 
 const TopNav = () => {
     const {colorMode, toggleColorMode} = useColorMode()
@@ -14,7 +15,7 @@ const TopNav = () => {
                     <Button onClick={toggleColorMode} marginX={3}>
                         {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
                     </Button>
-                    <Button variant="solid" bgGradient='linear(to-r, blue.400, purple.500)' textColor="white">Connect Wallet</Button>
+                    <ConnectWallet />
                 </Flex>
             </Flex>
         </nav>
