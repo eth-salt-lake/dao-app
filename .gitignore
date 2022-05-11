@@ -42,3 +42,12 @@ typechain
 #Hardhat files
 cache
 artifacts
+
+# VScode
+.vscode
+
+# Typechain-types
+typechain-types/*
+
+# OpenZeppelin
+.openzeppelin
