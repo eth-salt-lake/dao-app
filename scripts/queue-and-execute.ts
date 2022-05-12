@@ -10,6 +10,8 @@ export async function queueAndExecute() {
     const daoTopicsContract = await ethers.getContract("SlcDaoTopics");
 
     const hashedDescription = ethers.utils.id(PROPOSAL_DESCRIPTION);
+
+    console.log("hashed description:", hashedDescription);
     const args = [hashedDescription];
 
     // propose on governor contract by calling on SlcDaoTopics function addPassedProposal)
@@ -37,7 +39,7 @@ export async function queueAndExecute() {
     }
 
     console.log("Executing proposal...");
-    const executeTx = await await governorContract.queue(
+    const executeTx = await await governorContract.execute(
         [daoTopicsContract.address],
         [0],
         [encodedFunctionCall],

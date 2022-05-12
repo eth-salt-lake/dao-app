@@ -51,3 +51,6 @@ typechain-types/*
 
 # OpenZeppelin
 .openzeppelin
+
+# deployments
+deployments/*

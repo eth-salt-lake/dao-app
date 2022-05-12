@@ -4,7 +4,7 @@ import { ethers, getNamedAccounts, network } from "hardhat";
 import { BigNumber, Contract } from "ethers";
 import { EthereumProvider } from "hardhat/types";
 
-const index = 0;
+const index = 1;
 
 
 enum ProposalState {
@@ -29,13 +29,12 @@ export async function state(proposalIndex: number) {
     console.log(`got proposal id: ${proposalId} at index ${proposalIndex}`);
 
     const governorContract: Contract = await ethers.getContractAt("SlcDaoGovernor", GOVERNOR_ADDRESS);
-    const userVotesTwo = await governorContract.getVotes(managerTwo, 15); // managerTwo is the voter
-    const userVotes = await governorContract.getVotes(manager, 15);
     const state = await governorContract.state(proposalId);
+    const threshold = await governorContract.proposalThreshold();
+    const currentProposalVotes = await governorContract.proposalVotes(proposalId);
+    console.log(`current proposal votes: ${currentProposalVotes}`);
 
-    console.log(`Voter: ${managerTwo} with votes: ${userVotes.toString()};`);
-    console.log(`Voter: ${manager} with votes: ${userVotes.toString()};`);
-    console.log(`contract at state: ${ProposalState[+state.toString()]}`);
+    console.log(`contract at state: ${ProposalState[+state.toString()]}, threshold: ${threshold.toString()}`);
 };
 
 state(index).then(() => { process.exit(0) })

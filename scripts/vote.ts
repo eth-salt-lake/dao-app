@@ -5,7 +5,7 @@ import { Contract } from "ethers";
 import { moveBlocks } from "../utils/move-blocks";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-const index = 0;
+const index = 1;
 
 enum VoteType {
     Against,
@@ -21,7 +21,11 @@ export async function vote(proposalIndex: number) {
 
     // delegate vote to one self (so no burning or minting tokens on vote)
     const erc721Contract: Contract = await ethers.getContract("SlcDaoErc721");
-    await erc721Contract.connect(managerTwoSigner).delegate(managerTwo);
+    const delegateReceiptTx = await erc721Contract.connect(managerTwoSigner).delegate(managerTwo);
+
+    console.log(delegateReceiptTx.blockNumber);
+    const blockNumber = parseInt(delegateReceiptTx.blockNumber);
+    console.log("block number: ", blockNumber);
 
     // read index from PROPOSALS_JSON
     const proposals = JSON.parse(fs.readFileSync(PROPOSALS_JSON, "utf8"));
@@ -30,10 +34,15 @@ export async function vote(proposalIndex: number) {
     const voteWay = VoteType.For.valueOf();
     console.log(`voting for proposal ${proposalId} with vote ${voteWay}`);
     const governorContract: Contract = await ethers.getContractAt("SlcDaoGovernor", GOVERNOR_ADDRESS);
+
+    const pastTotalSupply = await governorContract.getVotes(managerTwo, blockNumber - 1);
+    console.log("past total supply: ", pastTotalSupply);
+
+
     const voteTxResponse = await governorContract.connect(managerTwoSigner).castVoteWithReason(proposalId, voteWay, "Reason: manager two");
     await voteTxResponse.wait(1);
 
-    // we're moving blocks along because we want to get to the end of voting period (for "testing" to see the proposal state)
+    // // we're moving blocks along because we want to get to the end of voting period (for "testing" to see the proposal state)
     if (developmentChains.includes(network.name)) {
         console.log(`moving blocks along to end of voting period; ${VOTING_DELAY + 1}`);
         moveBlocks(VOTING_DELAY + 1);
