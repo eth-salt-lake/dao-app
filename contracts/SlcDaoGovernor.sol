@@ -24,24 +24,26 @@ contract SlcDaoGovernor is
     UUPSUpgradeable
 {
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() initializer {}
+    constructor() {
+        _disableInitializers();
+    }
 
     function initialize(
         IVotesUpgradeable _token,
         TimelockControllerUpgradeable _timelock,
-        uint256 _votingDelay,
         uint256 _votingPeriod,
-        uint256 _quorumPercentage
+        uint256 _votingDelay,
+        uint256 _minQuorumFraction
     ) public initializer {
         __Governor_init("SlcDaoGovernor");
         __GovernorSettings_init(
-            _votingDelay, /* 1 block */
-            _votingPeriod, /* 2 weeks */
+            _votingPeriod, /* 1 block */
+            _votingDelay, /* 1 week */
             0
         );
         __GovernorCountingSimple_init();
         __GovernorVotes_init(_token);
-        __GovernorVotesQuorumFraction_init(_quorumPercentage);
+        __GovernorVotesQuorumFraction_init(_minQuorumFraction);
         __GovernorTimelockControl_init(_timelock);
         __Ownable_init();
         __UUPSUpgradeable_init();
